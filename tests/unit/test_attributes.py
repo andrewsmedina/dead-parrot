@@ -17,7 +17,10 @@
 # Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 # Boston, MA 02111-1307, USA.
 
-from nose.tools import assert_equals
+import platform
+
+from nose.tools import assert_equals, assert_true
+from nose import SkipTest
 from utils import assert_raises
 
 from deadparrot.models import Attribute

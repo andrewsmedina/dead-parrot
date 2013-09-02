@@ -24,6 +24,8 @@ from attributes import *
 from decimal import Decimal, InvalidOperation
 
 from deadparrot.models.registry import ModelRegistry
+from inspect import ismodule
+
 
 class FieldValidationError(Exception):
     pass
@@ -241,7 +243,10 @@ class BooleanField(Field):
             return False
 
         if isinstance(val, basestring):
-            val = __builtins__.get(val, val)
+            if ismodule(__builtins__):
+                val = __builtins__.__dict__.get(val, val)
+            else:
+                val = __builtins__.get(val, val)
 
         return val
 
@@ -374,9 +379,6 @@ class RelationShip(object):
         self.model = model
         if not self.is_lazy:
             self.set_to_model(model)
-
-    def resolve(self):
-        raise NotImplementedError
 
     def set_lazy(self, lazy):
         err = '%s.set_lazy takes a boolean as parameter, got %r'

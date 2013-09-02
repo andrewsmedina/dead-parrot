@@ -19,6 +19,8 @@
 # Boston, MA 02111-1307, USA.
 
 from datetime import datetime, date, time, timedelta
+from inspect import ismodule
+
 
 def camelize_string(string):
     camel_part =  "".join([s.title() for s in string.split("_")][1:])
@@ -54,10 +56,16 @@ class Attribute(object):
     def serialize(self, value=None):
         # if the type is a builtin (int, float, etc)
         # i will return him, otherway i return it stringified
-        if type(value) in __builtins__.values():
-            return value
+        if ismodule(__builtins__):
+            if type(value) in __builtins__.__dict__.values():
+                return value
+            else:
+                return unicode(value or self.value)
         else:
-            return unicode(value or self.value)
+            if type(value) in __builtins__.values():
+                return value
+            else:
+                return unicode(value or self.value)
 
     def fill(self, name, value):
         self.name = name
